@@ -1,7 +1,9 @@
 import apiClient from "@/lib/apiClient";
 import {
+  ForgotPassword,
   ITenantRegistrationPayload,
   LoginPayload,
+  ResetPasswordPayload,
   VerifyAccountPayload,
 } from "@/types/auth.type";
 
@@ -37,5 +39,21 @@ export function updateProfile(payload: FormData) {
     method: "PATCH",
     body: payload,
   });
+}
+
+export function userForgotPassword(payload: ForgotPassword){
+  return apiClient("/auth/forgot-password",{
+    method:"POST",
+    body:payload
+    
+  })
+}
+
+export function userResetPassword(payload:ResetPasswordPayload){
+  return apiClient("/auth/reset-password",{
+    method:"POST",
+    body:payload
+
+  })
 }
 

@@ -30,8 +30,8 @@ import { useQueryClient } from "@tanstack/react-query";
 const navItems = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about-us" },
-  { label: "Category", href: "/category" },
-  { label: "GearItem", href: "/gear" },
+  { label: "Landloard", href: "/landloard" },
+  { label: "Properties", href: "/properties" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -57,8 +57,15 @@ export function Header() {
     .slice(0, 2)
     .toUpperCase() || "U";
 
+  const dashboardHref =
+    user?.role === "ADMIN"
+      ? "/admin"
+      : user?.role === "LANDLORD"
+      ? "/landlord"
+      : "/user";
+
   const userMenuItems = [
-    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { label: "Dashboard", href: dashboardHref, icon: LayoutDashboard },
     { label: "Profile", href: "/profile", icon: User },
     { label: "My Payment", href: "/my-payment", icon: Crown },
   ];

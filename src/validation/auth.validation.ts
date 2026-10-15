@@ -1,17 +1,8 @@
 import z from "zod";
 
 export const loginSchema = z.object({
-  email: z.email(),
-  password: z
-    .string()
-    .min(8, "Password Must Minimum 8 Characters Long.")
-    .regex(/[a-z]/, "Password must contain at least 1 Lowercase Letter")
-    .regex(/[A-Z]/, "Password must contain at least 1 Uppercase Letter")
-    .regex(/[0-9]/, "Password must contain at least 1 Number")
-    .regex(
-      /[^A-Za-z0-9]/,
-      "Password must contain at least 1 Special Character",
-    ),
+  email: z.email("Please enter a valid email"),
+  password: z.string().min(1, "Password is required"),
 });
 
 export const tenantRegistrationSchema = z.object({
@@ -48,3 +39,26 @@ export const tenantRegistrationSchema = z.object({
   }),
 });
 
+export const tanantForgorPasswordSchema = z.object({
+  email: z.email("Please provide a valid email!").toLowerCase(),
+});
+
+export const resetPasswordValidationSchema = z.object({
+  email: z.email("Please provide a valid email!").toLowerCase(),
+
+  newPassword: z
+    .string("Password is required")
+    .min(8, "Password must be at least 8 characters long.")
+    .regex(/[a-z]/, "Password must contain at least 1 Lowercase Letter")
+    .regex(/[A-Z]/, "Password must contain at least 1 Uppercase Letter")
+    .regex(/[0-9]/, "Password must contain at least 1 Number")
+    .regex(
+      /[^A-Za-z0-9]/,
+      "Password must contain at least 1 Special Character",
+    ),
+
+  otp: z
+    .string()
+    .length(6, "OTP must be exactly 6 digits")
+    .regex(/^\d{6}$/, "OTP must contain only numbers"),
+});

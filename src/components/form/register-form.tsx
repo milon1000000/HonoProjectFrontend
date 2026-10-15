@@ -17,16 +17,9 @@ import { tenantRegistrationSchema } from "@/validation";
 import { toast } from "@/components/ui/toast";
 import { Spinner } from "@/components/ui/spinner";
 import { useRegistration } from "@/hooks";
+import { RegisterFormValues } from "@/types/auth.type";
 
-type RegisterFormValues = {
-  name: string;
-  email: string;
-  password: string;
-  tenant: {
-    contactNumber: string;
-    address?: string;
-  };
-};
+
 
 const defaultValues: RegisterFormValues = {
   name: "",

@@ -1,4 +1,4 @@
-import {  getMe, logout, updateProfile, userLogin, userRegistration, userVerification} from "@/api/auth.api";
+import {  getMe, logout, updateProfile, userForgotPassword, userLogin, userRegistration, userResetPassword, userVerification} from "@/api/auth.api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function useLogin() {
@@ -64,5 +64,17 @@ export function useGetMe() {
 export function useUpdateProfile(){
   return useMutation({
     mutationFn:updateProfile
+  })
+}
+
+export function useForgotPassword(){
+  return useMutation({
+    mutationFn:userForgotPassword
+  })
+}
+
+export function useResetPassword(){
+  return useMutation({
+    mutationFn:userResetPassword
   })
 }

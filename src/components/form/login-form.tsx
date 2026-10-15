@@ -185,6 +185,16 @@ export default function LoginForm() {
           Register
         </Link>
       </div>
+
+      <div className="text-center text-sm text-muted-foreground">
+        Want to become a landlord?{" "}
+        <Link
+          href="/landloard-apply"
+          className="font-medium underline underline-offset-4 hover:text-primary"
+        >
+          Apply as Landlord
+        </Link>
+      </div>
     </div>
   );
 }
