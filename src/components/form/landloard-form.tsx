@@ -52,9 +52,10 @@ export default function LandlordForm() {
           });
           queryClient.invalidateQueries({ queryKey: ["user"] });
 
-          // ইমেইলটি সার্চ প্যারাম হিসেবে পাঠানো হচ্ছে
+          // ইমেইল এবং মোড সার্চ প্যারাম হিসেবে পাঠানো হচ্ছে
           const params = new URLSearchParams();
           params.set("email", value.user.email);
+          params.set("mode", "landlord");
           router.push(`/register/verify-account?${params.toString()}`);
         },
         onError: (err: any) => {

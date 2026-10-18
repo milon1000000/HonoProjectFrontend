@@ -34,6 +34,7 @@ import {
   Home,
   Check,
   Share2,
+  DoorOpen,
 } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 
@@ -437,16 +438,41 @@ export default function SingleProperty({ id: propId }: SinglePropertyProps) {
               </div>
             )}
 
-            {/* Rooms Section (if property has room breakdown) */}
-            {property.rooms && property.rooms.length > 0 && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-card border shadow-xs space-y-4">
-                <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-                  <BedDouble className="w-5 h-5 text-primary" />
-                  Available Rooms ({property.rooms.length})
-                </h2>
+            {/* Property Rooms Section Card */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-card border shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                    <DoorOpen className="w-5 h-5 text-primary" />
+                    <span>Property Rooms</span>
+                    {property.rooms && property.rooms.length > 0 && (
+                      <Badge variant="secondary" className="text-xs ml-1 font-semibold">
+                        {property.rooms.length} {property.rooms.length === 1 ? "Room" : "Rooms"}
+                      </Badge>
+                    )}
+                  </h2>
+                  <p className="text-xs text-muted-foreground">
+                    Explore available rooms, seat capacity, and individual monthly rates.
+                  </p>
+                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                  {property.rooms.map((room: any, idx: number) => (
+                <Link
+                  href={`/properties/rooms?propertyId=${property.id}`}
+                  className={cn(
+                    buttonVariants({ variant: "default", size: "sm" }),
+                    "h-9 px-4 text-xs font-semibold rounded-xl gap-1.5 shrink-0 flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90"
+                  )}
+                >
+                  <DoorOpen className="w-4 h-4" />
+                  <span>View All Rooms</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+
+              {/* Quick preview of existing rooms if present */}
+              {property.rooms && property.rooms.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
+                  {property.rooms.slice(0, 4).map((room: any, idx: number) => (
                     <div
                       key={room.id || idx}
                       className="p-4 rounded-2xl border bg-muted/20 space-y-2 hover:border-primary/40 transition-colors"
@@ -463,7 +489,7 @@ export default function SingleProperty({ id: propId }: SinglePropertyProps) {
                         </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Capacity: {room.capacity || 1} persons
+                        Capacity: {room.capacity || room.availableSeats || 1} persons
                       </p>
                       {room.rentAmount && (
                         <p className="text-sm font-bold text-primary">
@@ -473,8 +499,14 @@ export default function SingleProperty({ id: propId }: SinglePropertyProps) {
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="p-4 rounded-2xl bg-muted/30 border border-dashed text-center space-y-1">
+                  <p className="text-xs text-muted-foreground">
+                    Click "View All Rooms" to check all individual rooms and seat details for this property.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right Sidebar: Sticky Landlord & Contact Card */}
@@ -499,6 +531,20 @@ export default function SingleProperty({ id: propId }: SinglePropertyProps) {
                   >
                     {property.isAvailable ? "Ready for Immediate Move-in" : "Currently Occupied"}
                   </Badge>
+                </div>
+
+                <div className="pt-2">
+                  <Link
+                    href={`/properties/rooms?propertyId=${property.id}`}
+                    className={cn(
+                      buttonVariants({ variant: "default", size: "sm" }),
+                      "w-full h-10 text-xs font-semibold rounded-xl gap-2 shadow-xs justify-center flex items-center bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:scale-[1.01]"
+                    )}
+                  >
+                    <DoorOpen className="w-4 h-4" />
+                    <span>View Property Rooms</span>
+                    <ChevronRight className="w-4 h-4 ml-auto" />
+                  </Link>
                 </div>
               </div>
 

@@ -116,3 +116,4 @@ export function getSingleProperty(id: string) {
     method: "GET",
   });
 }
+

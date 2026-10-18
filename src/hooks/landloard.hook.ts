@@ -109,3 +109,6 @@ export function useGetSingleProperty(id: string) {
     enabled: !!id,
   });
 }
+
+
+

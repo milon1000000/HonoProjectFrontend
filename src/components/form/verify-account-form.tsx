@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   Card,
@@ -25,10 +26,11 @@ interface VerifyAccountFormProps {
 }
 
 export default function VerifyAccountForm({
-  mode = "landlord",
+  mode: propMode,
 }: VerifyAccountFormProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [otp, setOtp] = useState("");
   const [isInvalid, setIsInvalid] = useState(false);
@@ -39,9 +41,15 @@ export default function VerifyAccountForm({
   const { mutate: verifyUser, isPending: isUserPending } = useVerification();
   const { mutate: verifyLandlord, isPending: isLandlordPending } = useLandloardVerify();
 
-  const verify = mode === "landlord" ? verifyLandlord : verifyUser;
-  const isPending = mode === "landlord" ? isLandlordPending : isUserPending;
+  // Mode resolution:
+  // 1. propMode (if passed directly)
+  // 2. searchParams (?mode=landlord or ?type=landlord)
+  // 3. Defaults to "user" (for registration verification)
+  const paramMode = (searchParams.get("mode") || searchParams.get("type")) as "landlord" | "user" | null;
+  const isExplicitMode = Boolean(propMode || paramMode);
+  const mode: "landlord" | "user" = propMode || (paramMode === "landlord" ? "landlord" : "user");
 
+  const isPending = isUserPending || isLandlordPending;
   const email = searchParams.get("email") || "";
 
   useEffect(() => {
@@ -72,57 +80,103 @@ export default function VerifyAccountForm({
       otp: codeToVerify,
     };
 
-    verify(verifyData, {
-      onSuccess: (res: any) => {
-        if (res?.success === false) {
-          setIsInvalid(true);
-          const failMsg = res?.message || "Invalid OTP. Please try again.";
-          setErrorMessage(failMsg);
-          toast.add({
-            title: "Verification Failed",
-            description: failMsg,
-            type: "error",
-          });
-          return;
-        }
+    const handleUserSuccess = (res: any) => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      toast.add({
+        title: "Verification Successful",
+        description: res?.message || "Welcome onboard! Your account has been verified.",
+        type: "success",
+      });
+      router.push("/");
+      router.refresh();
+    };
 
-        // ল্যান্ডলর্ড হলে এডমিন অ্যাপ্রুভাল বা স্পেশাল মেসেজ (প্রথম কোডের মতো)
-        if (mode === "landlord") {
-          toast.add({
-            title: "Verification Successful",
-            description:
-              res?.message ||
-              "Your application is verified. An admin will review and approve your account shortly.",
-            type: "success",
-          });
-          router.push("/");
-          router.refresh();
-          return;
-        }
+    const handleLandlordSuccess = (res: any) => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      toast.add({
+        title: "Verification Successful",
+        description:
+          res?.message ||
+          "Your application is verified. An admin will review and approve your account shortly.",
+        type: "success",
+      });
+      router.push("/");
+      router.refresh();
+    };
 
-        // সাধারণ ইউজারের ক্ষেত্রে
-        toast.add({
-          title: "Verification Successful",
-          description: "Welcome onboard!",
-          type: "success",
-        });
-        router.push("/");
-        router.refresh();
-      },
-      onError: (err: any) => {
-        setIsInvalid(true);
-        const errorText =
-          err?.data?.message ||
-          err?.message ||
-          "Invalid OTP or verification failed.";
-        setErrorMessage(errorText);
-        toast.add({
-          title: "Verification Failure",
-          description: errorText,
-          type: "error",
-        });
-      },
-    });
+    const handleError = (err: any) => {
+      setIsInvalid(true);
+      const errorText =
+        err?.data?.message ||
+        err?.response?.data?.message ||
+        err?.message ||
+        "Invalid OTP or verification failed.";
+      setErrorMessage(errorText);
+      toast.add({
+        title: "Verification Failure",
+        description: errorText,
+        type: "error",
+      });
+    };
+
+    if (mode === "landlord") {
+      verifyLandlord(verifyData, {
+        onSuccess: (res: any) => {
+          if (res?.success === false) {
+            handleError(res);
+            return;
+          }
+          handleLandlordSuccess(res);
+        },
+        onError: (err: any) => {
+          const msg = err?.data?.message || err?.message || "";
+          // If mode was not explicitly specified and landlord check failed with not found, fallback to user verification
+          if (!isExplicitMode && (msg.includes("Not Found") || msg.includes("Expired"))) {
+            verifyUser(verifyData, {
+              onSuccess: (res: any) => {
+                if (res?.success === false) {
+                  handleError(res);
+                  return;
+                }
+                handleUserSuccess(res);
+              },
+              onError: handleError,
+            });
+            return;
+          }
+          handleError(err);
+        },
+      });
+    } else {
+      // mode === "user"
+      verifyUser(verifyData, {
+        onSuccess: (res: any) => {
+          if (res?.success === false) {
+            handleError(res);
+            return;
+          }
+          handleUserSuccess(res);
+        },
+        onError: (err: any) => {
+          const msg = err?.data?.message || err?.message || "";
+          // If mode was not explicitly specified and user check failed with Tenant Doesnt Exist, fallback to landlord verification
+          if (!isExplicitMode && (msg.includes("Tenant Doesnt Exist") || msg.includes("Invalid OTP"))) {
+            verifyLandlord(verifyData, {
+              onSuccess: (res: any) => {
+                if (res?.success === false) {
+                  handleError(res);
+                  return;
+                }
+                handleLandlordSuccess(res);
+              },
+              onError: () => handleError(err),
+            });
+            return;
+          }
+          handleError(err);
+        },
+      });
+    }
   };
 
   const handleResend = () => {

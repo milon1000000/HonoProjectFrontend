@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User, Crown, LayoutDashboard, LogOut, Menu, Loader2 } from "lucide-react";
+import { User, Crown, LayoutDashboard, LogOut, Menu, Loader2, Calendar } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +32,7 @@ const navItems = [
   { label: "About", href: "/about-us" },
   { label: "Landloard", href: "/landloard" },
   { label: "Properties", href: "/properties" },
+  { label: "All Rooms", href: "/all-rooms" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -67,6 +68,9 @@ export function Header() {
   const userMenuItems = [
     { label: "Dashboard", href: dashboardHref, icon: LayoutDashboard },
     { label: "Profile", href: "/profile", icon: User },
+    ...(user?.role === "TENANT"
+      ? [{ label: "My Bookings", href: "/user/my-booking", icon: Calendar }]
+      : []),
     { label: "My Payment", href: "/my-payment", icon: Crown },
   ];
 

@@ -74,7 +74,10 @@ export function RegisterForm() {
             type: "success",
           });
 
-          const params = new URLSearchParams({ email: registrationData.email });
+          const params = new URLSearchParams({
+            email: registrationData.email,
+            mode: "user",
+          });
           router.push(`/register/verify-account?${params.toString()}`);
         },
         onError: (err: any) => {

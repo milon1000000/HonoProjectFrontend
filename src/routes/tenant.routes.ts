@@ -4,13 +4,13 @@ export const tenantRoutes = [
   {
     title: "Bookings & Rentals",
     items: [
-      {
-        title: "Overview",
-        url: `${prefix}`,
+       {
+        title: "Home",
+        url: `/`,
       },
       {
         title: "My Bookings",
-        url: `${prefix}`,
+        url: `${prefix}/my-booking`,
       },
     ],
   },

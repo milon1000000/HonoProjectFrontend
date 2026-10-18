@@ -1,9 +1,5 @@
-import React from 'react'
+import { redirect } from "next/navigation";
 
 export default function TenantPage() {
-  return (
-    <div>
-      This is TenantPage
-    </div>
-  )
+  redirect("/user/my-booking");
 }

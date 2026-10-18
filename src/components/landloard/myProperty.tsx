@@ -2,8 +2,11 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useGetMyProperty, useUpdateProperty, useDeleteProperty } from "@/hooks";
 import { Property } from "@/types/property.type";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "cn";
 import {
   Table,
   TableBody,
@@ -20,7 +23,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -42,7 +44,9 @@ import {
   CheckCircle2,
   Calendar,
   Home,
+  DoorOpen,
 } from "lucide-react";
+import CreateRoom from "@/components/room/create-room";
 
 const SUGGESTED_AMENITIES = [
   "ওয়াই-ফাই",
@@ -59,6 +63,7 @@ export default function MyProperty() {
   const [searchTerm, setSearchTerm] = useState("");
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [deletingProperty, setDeletingProperty] = useState<Property | null>(null);
+  const [addingRoomProperty, setAddingRoomProperty] = useState<Property | null>(null);
 
   const properties: Property[] = data?.data || [];
 
@@ -308,6 +313,29 @@ export default function MyProperty() {
                     {/* Actions */}
                     <TableCell className="text-right pr-4">
                       <div className="flex items-center justify-end gap-1.5">
+                        <Link
+                          href={`/landlord/create-property/rooms?propertyId=${property.id}`}
+                          className={cn(
+                            buttonVariants({ variant: "outline", size: "sm" }),
+                            "h-8 px-2.5 text-xs gap-1.5 hover:border-primary hover:text-primary transition-colors flex items-center shrink-0"
+                          )}
+                          title="View and manage all rooms of this property"
+                        >
+                          <DoorOpen className="h-3.5 w-3.5 text-primary" />
+                          <span>Rooms</span>
+                        </Link>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setAddingRoomProperty(property)}
+                          className="h-8 px-2.5 text-xs gap-1 text-primary border-primary/30 hover:bg-primary/10 hover:border-primary transition-colors"
+                          title="Add Room to this property"
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                          <span>Add Room</span>
+                        </Button>
+
                         <Button
                           variant="outline"
                           size="sm"
@@ -354,6 +382,17 @@ export default function MyProperty() {
           open={!!deletingProperty}
           onOpenChange={(isOpen) => {
             if (!isOpen) setDeletingProperty(null);
+          }}
+        />
+      )}
+
+      {/* Create Room Modal Dialog */}
+      {addingRoomProperty && (
+        <CreateRoom
+          property={addingRoomProperty}
+          open={!!addingRoomProperty}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setAddingRoomProperty(null);
           }}
         />
       )}
