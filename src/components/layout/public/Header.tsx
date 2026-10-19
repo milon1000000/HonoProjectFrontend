@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User, Crown, LayoutDashboard, LogOut, Menu, Loader2, Calendar } from "lucide-react";
+import {
+  User,
+  Crown,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Loader2,
+  Calendar,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,29 +57,27 @@ export function Header() {
 
   const displayName = user?.name || user?.username || "User";
   const displayEmail = user?.email || "";
-  const profileImage = user?.imageUrl || user?.profileImage || user?.avatar || "";
+  const profileImage =
+    user?.imageUrl || user?.profileImage || user?.avatar || "";
 
-  const avatarFallback = displayName
-    .split(" ")
-    .map((chunk: string) => chunk[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase() || "U";
+  const avatarFallback =
+    displayName
+      .split(" ")
+      .map((chunk: string) => chunk[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "U";
 
   const dashboardHref =
     user?.role === "ADMIN"
       ? "/admin"
       : user?.role === "LANDLORD"
-      ? "/landlord"
-      : "/user";
+        ? "/landlord"
+        : "/user";
 
   const userMenuItems = [
     { label: "Dashboard", href: dashboardHref, icon: LayoutDashboard },
     { label: "Profile", href: "/profile", icon: User },
-    ...(user?.role === "TENANT"
-      ? [{ label: "My Bookings", href: "/user/my-booking", icon: Calendar }]
-      : []),
-    { label: "My Payment", href: "/my-payment", icon: Crown },
   ];
 
   // ২. প্রোডাকশন-গ্রেড লগআউট ফাংশন
@@ -195,9 +201,7 @@ export function Header() {
                 >
                   Login
                 </Link>
-                <Link href="/register">
-               
-                </Link>
+                <Link href="/register"></Link>
               </div>
             )}
           </div>
@@ -311,9 +315,7 @@ export function Header() {
                       href="/register"
                       onClick={() => setIsOpen(false)}
                       className="block"
-                    >
-                   
-                    </Link>
+                    ></Link>
                   </div>
                 )}
               </div>

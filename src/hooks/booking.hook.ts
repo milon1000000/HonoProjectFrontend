@@ -2,6 +2,7 @@ import {
   cancelBooking,
   getMyBookings,
   payBooking,
+  userAllBooking,
   userBooking,
 } from "@/api/booking.api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -44,5 +45,12 @@ export function useGetMyBookings(params?: Record<string, any>) {
   return useQuery({
     queryKey: ["my-bookings", params],
     queryFn: () => getMyBookings(params),
+  });
+}
+
+export function useGetAllBookings(params?: Record<string, any>) {
+  return useQuery({
+    queryKey: ["all-bookings", params],
+    queryFn: () => userAllBooking(params),
   });
 }

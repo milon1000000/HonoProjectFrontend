@@ -31,6 +31,15 @@ export interface Payment {
   updatedAt: string;
 }
 
+export interface BookingTenant {
+  id: string;
+  name: string;
+  email: string;
+  contactNumber?: string | null;
+  address?: string | null;
+  userId?: string;
+}
+
 export interface Booking {
   id: string;
   status: BookingStatus;
@@ -40,6 +49,7 @@ export interface Booking {
   tenantId: string;
   propertyId: string;
   roomId?: string;
+  tenant?: BookingTenant;
   property?: Property;
   room?: Room;
   payment?: Payment;
@@ -57,5 +67,20 @@ export interface MyBookingsResponse {
     limit: number;
     total: number;
     totalPages: number;
+  };
+}
+
+export interface AllBookingsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    data: Booking[];
+    meta: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
   };
 }

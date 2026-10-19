@@ -5,6 +5,10 @@ export const adminRoutes = [
     title: "Management",
     items: [
       {
+        title: "Dashboard",
+        url: `${prefix}`,
+      },
+      {
         title: "Home",
         url: `/`,
       },
@@ -13,17 +17,12 @@ export const adminRoutes = [
         url: `${prefix}/landloard`,
       },
       {
-        title: "Back to Home",
-        url: "/",
+        title: "All Booking",
+        url: `${prefix}/all-booking`,
       },
-    ],
-  },
-  {
-    title: "Settings",
-    items: [
       {
-        title: "Profile Settings",
-        url: "/profile",
+        title: "All Payments",
+        url: `${prefix}/all-payments`,
       },
     ],
   },

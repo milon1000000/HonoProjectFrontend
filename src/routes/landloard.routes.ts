@@ -5,25 +5,16 @@ export const landloardRoutes = [
     title: "Management",
     items: [
       {
+        title: "Dashboard",
+        url: `${prefix}`,
+      },
+      {
         title: "Home",
         url: "/",
       },
       {
-        title: "Create-Property",
+        title: "Create Property",
         url: `${prefix}/create-property`,
-      },
-      {
-        title: "My Properties",
-        url: `${prefix}/properties`,
-      },
-    ],
-  },
-  {
-    title: "Settings",
-    items: [
-      {
-        title: "Profile Settings",
-        url: "/profile",
       },
     ],
   },

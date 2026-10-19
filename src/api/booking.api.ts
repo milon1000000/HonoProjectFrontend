@@ -41,3 +41,21 @@ export function getMyBookings(params?: Record<string, any>) {
     method: "GET",
   });
 }
+
+export function userAllBooking(params?: Record<string, any>) {
+  const query = new URLSearchParams();
+  if (params?.page) query.append("page", params.page.toString());
+  if (params?.limit) query.append("limit", params.limit.toString());
+  if (params?.status) query.append("status", params.status);
+  if (params?.sortBy) query.append("sortBy", params.sortBy);
+  if (params?.sortOrder) query.append("sortOrder", params.sortOrder);
+
+  const queryString = query.toString();
+  const url = queryString
+    ? `/booking/all-bookings?${queryString}`
+    : "/booking/all-bookings";
+
+  return apiClient(url, {
+    method: "GET",
+  });
+}
