@@ -597,7 +597,11 @@ export default function SingleProperty({ id: propId }: SinglePropertyProps) {
 
                   {landlord?.email && (
                     <a
-                      href={`mailto:${landlord.email}?subject=Inquiry for ${property.title}`}
+                      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+                        landlord.email
+                      )}&su=${encodeURIComponent(`Inquiry for ${property.title}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className={cn(
                         buttonVariants({ variant: "outline", size: "sm" }),
                         "w-full text-xs h-10 font-semibold rounded-xl gap-2 justify-center hover:border-primary hover:text-primary transition-colors flex items-center"

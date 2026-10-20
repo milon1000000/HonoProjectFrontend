@@ -527,7 +527,15 @@ export default function PropertyByRoom() {
 
                 {landlord?.email && (
                   <a
-                    href={`mailto:${landlord.email}?subject=Inquiry for Room ${selectedRoom.roomNumber} - ${property?.title || ""}&body=Hello ${landlordName}, I am interested in renting Room ${selectedRoom.roomNumber} at ${property?.title || ""}.`}
+                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+                      landlord.email
+                    )}&su=${encodeURIComponent(
+                      `Inquiry for Room ${selectedRoom.roomNumber} - ${property?.title || ""}`
+                    )}&body=${encodeURIComponent(
+                      `Hello ${landlordName}, I am interested in renting Room ${selectedRoom.roomNumber} at ${property?.title || ""}.`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={cn(
                       buttonVariants({ variant: "outline", size: "sm" }),
                       "w-full text-xs h-10 font-semibold rounded-xl gap-2 justify-center hover:border-primary hover:text-primary transition-colors flex items-center"

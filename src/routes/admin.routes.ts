@@ -16,6 +16,10 @@ export const adminRoutes = [
         title: "Landlord Approval",
         url: `${prefix}/landloard`,
       },
+       {
+        title: "All Users",
+        url: `${prefix}/all-users`,
+      },
       {
         title: "All Booking",
         url: `${prefix}/all-booking`,
