@@ -18,9 +18,9 @@ export default function GuestGuard({ children }: { children: ReactNode }) {
     if (user) {
       const redirectPath =
         user?.role === "ADMIN"
-          ? "/admin"
+          ? "/"
           : user?.role === "LANDLORD"
-            ? "/landlord"
+            ? "/"
             : "/";
       router.replace(redirectPath);
     }
