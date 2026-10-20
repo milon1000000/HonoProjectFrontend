@@ -81,6 +81,10 @@ export default function VerifyAccountForm({
     };
 
     const handleUserSuccess = (res: any) => {
+      const accessToken = res?.data?.accessToken;
+      if (accessToken && typeof window !== "undefined") {
+        localStorage.setItem("accessToken", accessToken);
+      }
       queryClient.invalidateQueries({ queryKey: ["user"] });
       toast.add({
         title: "Verification Successful",

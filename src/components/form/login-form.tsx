@@ -39,7 +39,11 @@ export default function LoginForm() {
     },
     onSubmit: ({ value }) => {
       login(value, {
-        onSuccess: () => {
+        onSuccess: (res: any) => {
+          const accessToken = res?.data?.accessToken;
+          if (accessToken && typeof window !== "undefined") {
+            localStorage.setItem("accessToken", accessToken);
+          }
           toast.add({
             title: "Login Success",
             description: "Welcome back!",
@@ -198,3 +202,4 @@ export default function LoginForm() {
     </div>
   );
 }
+

@@ -82,6 +82,9 @@ export function Header() {
 
   // ২. প্রোডাকশন-গ্রেড লগআউট ফাংশন
   const handleLogout = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("accessToken");
+    }
     logout(undefined, {
       onSuccess: () => {
         toast.success("Logged out successfully");

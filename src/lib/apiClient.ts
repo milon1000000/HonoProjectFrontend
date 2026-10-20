@@ -11,6 +11,18 @@ const apiClient = ofetch.create({
   baseURL: BASE_URL,
   credentials: "include",
 
+  onRequest({ options }) {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        options.headers = {
+          ...(options.headers as any),
+          Authorization: `Bearer ${token}`,
+        };
+      }
+    }
+  },
+
   async onResponseError(context: FetchContext): Promise<void> {
     const { request, response, options } = context;
 
@@ -37,8 +49,16 @@ const apiClient = ofetch.create({
           method: "POST",
           credentials: "include",
         })
+          .then((res: any) => {
+            const newToken = res?.data?.accessToken;
+            if (newToken && typeof window !== "undefined") {
+              localStorage.setItem("accessToken", newToken);
+            }
+            return res;
+          })
           .catch((err) => {
             if (typeof window !== "undefined") {
+              localStorage.removeItem("accessToken");
               const pathname = window.location.pathname;
               if (!publicPaths.includes(pathname)) {
                 window.location.href = "/login";
@@ -55,8 +75,20 @@ const apiClient = ofetch.create({
       try {
         await refreshPromise;
 
+        const currentToken =
+          typeof window !== "undefined"
+            ? localStorage.getItem("accessToken")
+            : null;
+        const retryHeaders: Record<string, string> = {
+          ...(options.headers as any),
+        };
+        if (currentToken) {
+          retryHeaders.Authorization = `Bearer ${currentToken}`;
+        }
+
         const retryResponse = await ofetch.raw(request, {
           ...options,
+          headers: retryHeaders,
           credentials: "include",
           baseURL: BASE_URL,
           _retry: true,
