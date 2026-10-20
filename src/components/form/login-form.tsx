@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { GoogleLoginButton } from "@/components/auth/google-login-button";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { Eye, EyeOff } from "lucide-react";
@@ -25,7 +26,20 @@ import {
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (error) {
+      toast.add({
+        title: "Login Error",
+        description: decodeURIComponent(error),
+        type: "error",
+      });
+      router.replace("/login");
+    }
+  }, [searchParams, router]);
 
   const { mutate: login, isPending: loginPending } = useLogin();
 
@@ -179,6 +193,8 @@ export default function LoginForm() {
       </form>
 
       <FieldSeparator>Or continue with</FieldSeparator>
+
+      <GoogleLoginButton text="Continue with Google" />
 
       <div className="text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{" "}

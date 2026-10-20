@@ -1,5 +1,6 @@
 "use client";
 
+import { GoogleLoginButton } from "@/components/auth/google-login-button";
 import { useForm } from "@tanstack/react-form";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
@@ -266,6 +267,17 @@ export function RegisterForm() {
           </Button>
         </FieldGroup>
       </form>
+
+      <div className="relative my-4">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-gray-200" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-white px-2 text-muted-foreground">Or continue with</span>
+        </div>
+      </div>
+
+      <GoogleLoginButton text="Sign up with Google" />
 
       <div className="text-center text-sm text-muted-foreground">
         Already have an account?{" "}
